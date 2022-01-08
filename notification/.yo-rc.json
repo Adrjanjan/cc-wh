@@ -36,6 +36,8 @@
     "nativeLanguage": "en",
     "jwtSecretKey": "Njc1ZjUxYzBlZWUwNWExNjNjNjVkMDljMWQwZWEyODJjNjlkZGRmZmNjZDMzZjRhYWFkYTYxOTY0ZGRkYjU4M2QxZWMyYjkxNTRhNDNjZTg1ODk3MmE1MzY4YmRiOGNmYjFlMTA2OGE4MzIxYWY1NDg3ZGEyMTM1MDdjYjU1NDM=",
     "languages": ["en", "fr", "pl"],
-    "enableGradleEnterprise": false
+    "enableGradleEnterprise": false,
+    "entities": ["Notification"],
+    "lastLiquibaseTimestamp": 1641668643000
   }
 }

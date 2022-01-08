@@ -36,6 +36,8 @@
     "nativeLanguage": "en",
     "jwtSecretKey": "YTdlY2ExNzFlMTQwOGU4ZjE3ODQwMmE1Nzg4YjQwYTk3ZWJiYzdhNTNjNmNiMjMxZmRhNTZjMzE4MDFmODllYTJjZTI4OTAwZjYyOWYyNDc3YjcyYjRlMDEwZjQ4NjE0NGZkZmRiNGE3NzBhODZhNTg5OGMzZDUyODNmYzc5NjU=",
     "languages": ["en", "fr", "pl"],
-    "enableGradleEnterprise": false
+    "enableGradleEnterprise": false,
+    "entities": ["Invoice", "Shipment"],
+    "lastLiquibaseTimestamp": 1641668481000
   }
 }

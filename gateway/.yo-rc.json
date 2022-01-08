@@ -41,6 +41,8 @@
     "clientThemeVariant": "",
     "languages": ["en", "fr", "pl"],
     "enableGradleEnterprise": false,
-    "cypressCoverage": false
+    "cypressCoverage": false,
+    "entities": ["Product", "ProductCategory", "Customer", "ProductOrder", "OrderItem", "Invoice", "Shipment", "Notification"],
+    "lastLiquibaseTimestamp": 1641668344000
   }
 }

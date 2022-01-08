@@ -1,0 +1,38 @@
+{
+  "gatewayApp": {
+    "productorderCustomer": {
+      "home": {
+        "title": "Customer",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Dodaj Customer",
+        "createOrEditLabel": "Dodaj lub edytuj: Customer",
+        "notFound": "No Customers found"
+      },
+      "delete": {
+        "question": "Czy na pewno chcesz usunąć Customer {{ id }}?"
+      },
+      "detail": {
+        "title": "Customer"
+      },
+      "id": "ID",
+      "userId": "User Id",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "gender": "Gender",
+      "email": "Email",
+      "phone": "Phone",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "country": "Country",
+      "order": "Order"
+    }
+  },
+  "productorderApp": {
+    "productorderCustomer": {
+      "created": "Utworzono nowy obiekt typu Customer z identyfikatorem {{ param }}",
+      "updated": "Uaktualniono obiekt typu Customer z identyfikatorem {{ param }}",
+      "deleted": "Usunięto obiekt typu Customer z identyfikatorem {{ param }}"
+    }
+  }
+}
