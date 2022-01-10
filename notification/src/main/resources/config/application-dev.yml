@@ -27,11 +27,16 @@ eureka:
     service-url:
       defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
 
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
 spring:
   devtools:
     restart:
       enabled: true
-      additional-exclude: static/**
+      additional-exclude: static/**,.h2.server.properties
     livereload:
       enabled: false # we use Webpack dev server + BrowserSync for livereload
   jackson:
@@ -45,10 +50,26 @@ spring:
       profile: dev
       label: main # toggle to switch to a different version of the configuration as stored in git
       # it can be set to any label, branch or commit of the configuration source Git repository
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      database: notification
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:file:./build/h2db/db/notification;DB_CLOSE_DELAY=-1
+    username: notification
+    password:
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+  h2:
+    console:
+      # disable spring boot built-in h2-console since we start it manually with correct configuration
+      enabled: false
+  jpa:
+    database-platform: tech.jhipster.domain.util.FixedH2Dialect
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+  liquibase:
+    # Remove 'faker' if you do not want the sample data to be loaded automatically
+    contexts: dev, faker
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
@@ -92,7 +113,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: Njc1ZjUxYzBlZWUwNWExNjNjNjVkMDljMWQwZWEyODJjNjlkZGRmZmNjZDMzZjRhYWFkYTYxOTY0ZGRkYjU4M2QxZWMyYjkxNTRhNDNjZTg1ODk3MmE1MzY4YmRiOGNmYjFlMTA2OGE4MzIxYWY1NDg3ZGEyMTM1MDdjYjU1NDM=
+        base64-secret: ZDNlMDIwNDBhNWMxZjZiMDIzZWYzODFkNjJjNmI0NDQwYjYxYzQzZDdmZjRmYjFhMmViYmZkYTc1NWUxNTQyZmQ2YWYxODY4NWU5NWM2MWNiMzNiNGY2ZWRlMDg2MDQzZTE1NjYzN2FmMjljODY2MzljNTY2ZTFlMTc1ZmNiYTI=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000

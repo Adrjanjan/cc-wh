@@ -13,10 +13,10 @@ plugins {
     id "idea"
     id "eclipse"
     id "jacoco"
-    id "war"
     id "org.springframework.boot"
     id "com.google.cloud.tools.jib"
     id "com.gorylenko.gradle-git-properties"
+    id "org.liquibase.gradle"
     id "org.sonarqube"
     id "io.spring.nohttp"
     id "com.github.andygoossens.gradle-modernizer-plugin"
@@ -113,6 +113,9 @@ task integrationTest(type: Test) {
         events 'FAILED', 'SKIPPED'
     }
     jvmArgs += '-Djava.security.egd=file:/dev/./urandom -Xmx256m'
+    if (project.hasProperty('testcontainers')) {
+        environment 'spring.profiles.active', 'testcontainers'
+    }
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
@@ -149,6 +152,39 @@ task cucumberTestReport(type: TestReport) {
     reportOn cucumberTest
 }
 
+if (!project.hasProperty("runList")) {
+    project.ext.runList = "main"
+}
+
+project.ext.diffChangelogFile = "src/main/resources/config/liquibase/changelog/" + new Date().format("yyyyMMddHHmmss") + "_changelog.xml"
+
+liquibase {
+    activities {
+        main {
+            driver "org.h2.Driver"
+            url "jdbc:h2:file:./build/h2db/db/notification"
+            username "notification"
+            password ""
+            changeLogFile "src/main/resources/config/liquibase/master.xml"
+            defaultSchemaName ""
+            logLevel "debug"
+            classpath "src/main/resources/"
+        }
+        diffLog {
+            driver "org.h2.Driver"
+            url "jdbc:h2:file:./build/h2db/db/notification"
+            username "notification"
+            password ""
+            changeLogFile project.ext.diffChangelogFile
+            referenceUrl "hibernate:spring:com.mycompany.store.domain?dialect=org.hibernate.dialect.H2Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
+            defaultSchemaName ""
+            logLevel "debug"
+            classpath "$buildDir/classes/java/main"
+        }
+    }
+
+    runList = project.ext.runList
+}
 
 gitProperties {
     failOnNoGitDirectory = false
@@ -197,18 +233,31 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation "com.hazelcast:hazelcast"
+    implementation "com.hazelcast:hazelcast-hibernate53"
     implementation "com.hazelcast:hazelcast-spring"
     implementation "javax.cache:cache-api"
+    implementation "org.hibernate:hibernate-core"
+    implementation "com.zaxxer:HikariCP"
     implementation "org.apache.commons:commons-lang3"
     implementation "javax.transaction:javax.transaction-api"
+    implementation "org.hibernate:hibernate-entitymanager"
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "org.liquibase:liquibase-core"
+    liquibaseRuntime "org.liquibase:liquibase-core"
+    liquibaseRuntime "org.liquibase.ext:liquibase-hibernate5:${liquibaseHibernate5Version}"
+    liquibaseRuntime sourceSets.main.compileClasspath
     implementation "org.springframework.boot:spring-boot-loader-tools"
     implementation "org.springframework.boot:spring-boot-starter-mail"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-elasticsearch"
+    testImplementation "org.testcontainers:postgresql"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation ("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
@@ -234,13 +283,15 @@ dependencies {
         implementation "io.jsonwebtoken:jjwt-impl"
         implementation "io.jsonwebtoken:jjwt-jackson"
     }
-    implementation "com.github.cloudyrock.mongock:mongock-spring-v5"
-    implementation "com.github.cloudyrock.mongock:mongodb-springdata-v3-driver"
     implementation ("io.springfox:springfox-oas")
     implementation ("io.springfox:springfox-swagger2")
     implementation "io.springfox:springfox-bean-validators"
+    implementation "org.postgresql:postgresql"
+    liquibaseRuntime "org.postgresql:postgresql"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen:${hibernateVersion}"
+    annotationProcessor "org.glassfish.jaxb:jaxb-runtime:${jaxbRuntimeVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
     testImplementation "io.cucumber:cucumber-junit"
     testImplementation "io.cucumber:cucumber-java"
@@ -250,7 +301,8 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-test"
     testImplementation "com.tngtech.archunit:archunit-junit5-api:${archunitJunit5Version}"
     testRuntimeOnly "com.tngtech.archunit:archunit-junit5-engine:${archunitJunit5Version}"
-    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
+    testImplementation "com.h2database:h2"
+    liquibaseRuntime "com.h2database:h2"
     developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }

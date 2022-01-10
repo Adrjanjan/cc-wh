@@ -35,3 +35,4 @@ scrape_configs:
           - gateway:8080
           - invoice:8082
           - notification:8083
+          - productorder:8081

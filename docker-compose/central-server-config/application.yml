@@ -7,7 +7,7 @@ jhipster:
   security:
     authentication:
       jwt:
-        base64-secret: NmUzMDJjMzQwNDc2MjllMjBjODJmNGYxYTZhYTY5ZDM0YmU0OWVkNWFmMjc2YTlhMjBmOWRlOGUzNzE2ZDI5MjUxNjQ1NTUwMjhiMTE1ZDlkZjljY2E4YzE5MDhhNjZlZTk3NA==
+        base64-secret: YzYyYmIwNGY0YzI5ZTM5MjU1Y2Y3M2I0NmE4NjcxNTU2ZmFlYzJiOWFjYjE0OGRhMzkwZTM0NThjZjVlZDE3M2M4NWFlMjAwMWViYTQ2ZWU5OTNmYmUyYWJlYmIyYTI2Zjk2Ng==
 management:
   metrics:
     export:

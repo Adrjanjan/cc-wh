@@ -20,28 +20,45 @@ eureka:
     appname: notification
     instanceId: notification:${spring.application.instance-id:${random.value}}
 
-mongock:
-  change-logs-scan-package:
-    - com.mycompany.store.config.dbmigrations
-  mongo-db:
-    read-concern: local
-    write-concern:
-      journal: false
-
 spring:
+  profiles:
+    # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
+    #active: testcontainers
   application:
     name: notification
   cloud:
     config:
       enabled: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:notification;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    name:
+    username:
+    password:
+    hikari:
+      auto-commit: false
   jackson:
     serialization:
       write-durations-as-timestamps: false
-  data:
-    mongodb:
-      host: localhost
-      port: 0
-      database: notification
+  jpa:
+    database-platform: tech.jhipster.domain.util.FixedH2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.hbm2ddl.auto: validate
+      hibernate.jdbc.time_zone: UTC
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+  liquibase:
+    contexts: test
   mail:
     host: localhost
   main:
@@ -87,7 +104,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: Njc1ZjUxYzBlZWUwNWExNjNjNjVkMDljMWQwZWEyODJjNjlkZGRmZmNjZDMzZjRhYWFkYTYxOTY0ZGRkYjU4M2QxZWMyYjkxNTRhNDNjZTg1ODk3MmE1MzY4YmRiOGNmYjFlMTA2OGE4MzIxYWY1NDg3ZGEyMTM1MDdjYjU1NDM=
+        base64-secret: ZDNlMDIwNDBhNWMxZjZiMDIzZWYzODFkNjJjNmI0NDQwYjYxYzQzZDdmZjRmYjFhMmViYmZkYTc1NWUxNTQyZmQ2YWYxODY4NWU5NWM2MWNiMzNiNGY2ZWRlMDg2MDQzZTE1NjYzN2FmMjljODY2MzljNTY2ZTFlMTc1ZmNiYTI=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
 # ===================================================================
